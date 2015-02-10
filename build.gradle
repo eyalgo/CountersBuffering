@@ -32,6 +32,7 @@ repositories { mavenCentral() }
 dependencies {
 	compile 'com.google.guava:guava:18.0'
 	compile 'org.mongodb:mongo-java-driver:2.+'
+	//	compile 'net.vz.mongodb.jackson:mongo-jackson-mapper:1.4.2'
 	compile 'org.mongodb.morphia:morphia:0.109'
 	compile 'io.dropwizard:dropwizard-core:0.7.1'
 	compile 'org.apache.commons:commons-lang3:3.3.2'
@@ -61,10 +62,6 @@ task oneJar(type: OneJar) {
 	mergeManifestFromJar = true
 }
 
-run {
-	args 'server', './src/main/resources/config/helloworld.yml'
-}
+run { args 'server', './src/main/resources/config/helloworld.yml' }
 
-artifacts {
-	oneJar
-}
+artifacts { oneJar }

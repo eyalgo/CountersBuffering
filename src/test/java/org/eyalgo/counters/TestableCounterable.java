@@ -1,6 +1,6 @@
 package org.eyalgo.counters;
 
-import org.eyalgo.counters.Counterable;
+import com.google.common.base.Objects;
 
 public class TestableCounterable implements Counterable {
 	private final String n1;
@@ -16,4 +16,17 @@ public class TestableCounterable implements Counterable {
 		return n1 + "::" + n2;
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(n1, n2);
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof TestableCounterable) {
+			TestableCounterable that = (TestableCounterable) object;
+			return Objects.equal(this.n1, that.n1) && Objects.equal(this.n2, that.n2);
+		}
+		return false;
+	}
 }
