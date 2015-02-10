@@ -1,7 +1,3 @@
-template: Hello, %s!
-
-defaultName: Stranger
-
 server:
   adminMinThreads: 1
   adminMaxThreads: 64
@@ -13,7 +9,7 @@ server:
       port: 9091
 
 mongo:
-	host: localhost
-	port: 12345
-	db: metadata
-	dbCollection: counters
+  host: localhost
+  port: 12345
+  db: metadata
+  dbCollection: counters

@@ -12,6 +12,9 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 
 public abstract class CountersRetriever {
+	public CountersRetriever() {
+	}
+
 	public Map<String, Integer> getAllCounters(Class<? extends Counterable> clazz) {
 		List<Counter> counters = counters();
 		Builder<String, Integer> mapBuilder = ImmutableMap.builder();
