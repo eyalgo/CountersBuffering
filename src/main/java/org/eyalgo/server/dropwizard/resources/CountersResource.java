@@ -9,8 +9,8 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
-import org.eyalgo.counters.Counterable;
 import org.eyalgo.counters.CountersRetriever;
+import org.eyalgo.server.dropwizard.api.ServiceCounter;
 
 import com.codahale.metrics.annotation.Timed;
 
@@ -18,11 +18,9 @@ import com.codahale.metrics.annotation.Timed;
 public class CountersResource {
 
 	private final CountersRetriever countersRetriever;
-	private final Class<? extends Counterable> clazz;
 
-	public CountersResource(CountersRetriever countersRetriever, Class<? extends Counterable> clazz) {
+	public CountersResource(CountersRetriever countersRetriever) {
 		this.countersRetriever = countersRetriever;
-		this.clazz = clazz;
 	}
 
 	@GET
@@ -30,7 +28,7 @@ public class CountersResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Map<String, Integer> counters() {
 		try {
-			return countersRetriever.getAllCounters(clazz);
+			return countersRetriever.getAllCounters(ServiceCounter.class);
 		} catch (Exception e) {
 			throw new WebApplicationException(Status.SERVICE_UNAVAILABLE);
 		}

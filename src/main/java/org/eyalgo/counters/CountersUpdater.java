@@ -1,15 +1,8 @@
 package org.eyalgo.counters;
 
-import static org.eyalgo.counters.CountersUtils.counterPrefix;
 
-public abstract class CountersUpdater {
-	public CountersUpdater() {
-	}
+public interface CountersUpdater {
 
-	public void increaseCounter(Counterable counterable, int value) {
-		String key = counterPrefix(counterable.getClass()) + counterable.counterKey();
-		increaseCounter(key, value);
-	}
+	public abstract void increaseCounter(Counterable counterable, int value);
 
-	protected abstract void increaseCounter(String key, int value);
 }

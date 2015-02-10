@@ -8,9 +8,10 @@ import java.net.UnknownHostException;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
-import org.eyalgo.counters.CountersRetriever;
 import org.eyalgo.counters.impl.mongo.MongoCountersRetriever;
+import org.eyalgo.counters.impl.mongo.MongoCountersUpdater;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -72,9 +73,9 @@ public class MongoFactory {
 		this.dbCollection = dbCollection;
 	}
 
-	public MongoClient build(Environment environment) throws UnknownHostException {
+	public MongoServices build(Environment environment) throws UnknownHostException {
 		MongoClient client = new MongoClient(getHost(), getPort());
-		environment.lifecycle().manage(new Managed() {
+		environment.lifecycle().manage(new Managed() { // TODO create a class instead of anonymous
 			@Override
 			public void start() {
 			}
@@ -85,10 +86,19 @@ public class MongoFactory {
 				client.close();
 			}
 		});
-		return client;
+		return new MongoServices(client, getDb());
 	}
 
-	public CountersRetriever createCountersRetriever(MongoClient client) {
-		return new MongoCountersRetriever(new Morphia().createDatastore(client, getDb()));
+	public final static class MongoServices {
+		public final MongoClient client;
+		public final MongoCountersRetriever countersRetriever;
+		public final MongoCountersUpdater mongoCountersUpdater;
+
+		private MongoServices(MongoClient client, String _db) {
+			this.client = client;
+			Datastore datastore = new Morphia().createDatastore(client, _db);
+			countersRetriever = new MongoCountersRetriever(datastore);
+			mongoCountersUpdater = new MongoCountersUpdater(datastore);
+		}
 	}
 }

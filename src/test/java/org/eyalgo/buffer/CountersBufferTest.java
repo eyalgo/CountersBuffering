@@ -3,7 +3,7 @@ package org.eyalgo.buffer;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
-import org.eyalgo.counters.CountersUpdater;
+import org.eyalgo.counters.AbstractCountersUpdater;
 import org.eyalgo.counters.TestableCounterable;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,7 +14,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class CountersBufferTest {
 	@Mock
-	private CountersUpdater countersUpdater;
+	private AbstractCountersUpdater countersUpdater;
 	
 	@Before
 	public void setup() {

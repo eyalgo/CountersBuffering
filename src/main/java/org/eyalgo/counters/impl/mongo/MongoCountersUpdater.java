@@ -1,11 +1,11 @@
 package org.eyalgo.counters.impl.mongo;
 
-import org.eyalgo.counters.CountersUpdater;
+import org.eyalgo.counters.AbstractCountersUpdater;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.UpdateOperations;
 
-public class MongoCountersUpdater extends CountersUpdater {
+public class MongoCountersUpdater extends AbstractCountersUpdater {
 	private final MongoCountersDao dao;
 
 	public MongoCountersUpdater(Datastore datastore) {
