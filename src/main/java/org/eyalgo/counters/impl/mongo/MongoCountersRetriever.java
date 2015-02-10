@@ -2,11 +2,11 @@ package org.eyalgo.counters.impl.mongo;
 
 import java.util.List;
 
-import org.eyalgo.counters.CountersRetriever;
+import org.eyalgo.counters.AbstractCountersRetriever;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.query.Query;
 
-public class MongoCountersRetriever extends CountersRetriever {
+public class MongoCountersRetriever extends AbstractCountersRetriever {
 	private final MongoCountersDao dao;
 
 	public MongoCountersRetriever(Datastore datastore) {

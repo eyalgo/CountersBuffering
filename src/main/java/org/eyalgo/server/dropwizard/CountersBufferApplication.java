@@ -5,7 +5,7 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
 import org.eyalgo.server.dropwizard.health.MongoConnectionHealth;
-import org.eyalgo.server.dropwizard.resources.HelloWorldResource;
+import org.eyalgo.server.dropwizard.jdbi.MongoFactory;
 
 import com.mongodb.MongoClient;
 
@@ -24,8 +24,9 @@ public class CountersBufferApplication extends Application<CountersBufferConfigu
 
 	@Override
 	public void run(CountersBufferConfiguration configuration, Environment environment) throws Exception {
-		MongoClient client = configuration.getMongoConfiguration().build(environment);
+		MongoFactory mongoFactory = configuration.getMongoFactory();
+		MongoClient client = mongoFactory.build(environment);
 		environment.healthChecks().register("mongo", new MongoConnectionHealth(client));
-		environment.jersey().register(new HelloWorldResource("Hello, %s!", "You"));
+		environment.jersey().register(mongoFactory.createCountersRetriever(client));
 	}
 }

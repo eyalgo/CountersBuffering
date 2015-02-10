@@ -1,4 +1,4 @@
-package org.eyalgo.server.dropwizard;
+package org.eyalgo.server.dropwizard.jdbi;
 
 import io.dropwizard.lifecycle.Managed;
 import io.dropwizard.setup.Environment;
@@ -8,12 +8,15 @@ import java.net.UnknownHostException;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
+import org.eyalgo.counters.CountersRetriever;
+import org.eyalgo.counters.impl.mongo.MongoCountersRetriever;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.mongodb.morphia.Morphia;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mongodb.MongoClient;
 
-public class MongoClientFactory {
+public class MongoFactory {
 	@NotEmpty
 	private String host = "localhost";
 
@@ -30,7 +33,7 @@ public class MongoClientFactory {
 	@NotEmpty
 	private String dbCollection = "counters";
 
-	public MongoClientFactory() {
+	public MongoFactory() {
 	}
 
 	@JsonProperty
@@ -68,20 +71,24 @@ public class MongoClientFactory {
 	public void setDbCollection(String dbCollection) {
 		this.dbCollection = dbCollection;
 	}
-	
-	public MongoClient build (Environment environment) throws UnknownHostException {
+
+	public MongoClient build(Environment environment) throws UnknownHostException {
 		MongoClient client = new MongoClient(getHost(), getPort());
 		environment.lifecycle().manage(new Managed() {
-            @Override
-            public void start() {
-            }
+			@Override
+			public void start() {
+			}
 
-            @Override
-            public void stop() {
-            	System.out.println("Closing mongo client");
-                client.close();
-            }
-        });
+			@Override
+			public void stop() {
+				System.out.println("Closing mongo client");
+				client.close();
+			}
+		});
 		return client;
+	}
+
+	public CountersRetriever createCountersRetriever(MongoClient client) {
+		return new MongoCountersRetriever(new Morphia().createDatastore(client, getDb()));
 	}
 }
