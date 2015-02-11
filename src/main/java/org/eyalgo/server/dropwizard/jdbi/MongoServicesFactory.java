@@ -12,6 +12,9 @@ import org.eyalgo.counters.CountersRetriever;
 import org.eyalgo.counters.CountersUpdater;
 import org.eyalgo.counters.impl.mongo.MongoCountersRetriever;
 import org.eyalgo.counters.impl.mongo.MongoCountersUpdater;
+import org.eyalgo.server.dropwizard.core.CountersServices;
+import org.eyalgo.server.dropwizard.core.ServicesFactory;
+import org.eyalgo.server.dropwizard.health.MongoConnectionHealth;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
@@ -19,7 +22,7 @@ import org.mongodb.morphia.Morphia;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mongodb.MongoClient;
 
-public class MongoFactory {
+public class MongoServicesFactory implements ServicesFactory {
 	@NotEmpty
 	private String host = "localhost";
 
@@ -36,7 +39,7 @@ public class MongoFactory {
 	@NotEmpty
 	private String dbCollection = "counters";
 
-	public MongoFactory() {
+	public MongoServicesFactory() {
 	}
 
 	@JsonProperty
@@ -75,32 +78,45 @@ public class MongoFactory {
 		this.dbCollection = dbCollection;
 	}
 
-	public MongoServices build(Environment environment) throws UnknownHostException {
-		MongoClient client = new MongoClient(getHost(), getPort());
-		environment.lifecycle().manage(new Managed() { // TODO create a class instead of anonymous
-			@Override
-			public void start() {
-			}
+	@Override
+	public CountersServices build(Environment environment) {
+		try {
+			MongoClient client = new MongoClient(getHost(), getPort());
+			environment.lifecycle().manage(new Managed() { // TODO create a class instead of anonymous
+						@Override
+						public void start() {
+						}
 
-			@Override
-			public void stop() {
-				System.out.println("Closing mongo client");
-				client.close();
-			}
-		});
-		return new MongoServices(client, getDb());
+						@Override
+						public void stop() {
+							client.close();
+						}
+					});
+			environment.healthChecks().register("mongo", new MongoConnectionHealth(client));
+			return new MongoCountersServices(client, getDb());
+		} catch (UnknownHostException e) {
+			throw new RuntimeException("Problem building CountersServices", e);
+		}
 	}
 
-	public final static class MongoServices {
-		public final MongoClient client;
-		public final CountersRetriever countersRetriever;
-		public final CountersUpdater countersUpdater;
+	private final static class MongoCountersServices implements CountersServices {
+		private final CountersRetriever countersRetriever;
+		private final CountersUpdater countersUpdater;
 
-		private MongoServices(MongoClient client, String _db) {
-			this.client = client;
+		private MongoCountersServices(MongoClient client, String _db) {
 			Datastore datastore = new Morphia().createDatastore(client, _db);
 			countersRetriever = new MongoCountersRetriever(datastore);
 			countersUpdater = new MongoCountersUpdater(datastore);
+		}
+
+		@Override
+		public CountersRetriever getCountersRetriever() {
+			return countersRetriever;
+		}
+
+		@Override
+		public CountersUpdater getCountersUpdater() {
+			return countersUpdater;
 		}
 	}
 }

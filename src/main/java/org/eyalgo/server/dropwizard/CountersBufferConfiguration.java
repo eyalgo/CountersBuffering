@@ -1,23 +1,23 @@
 package org.eyalgo.server.dropwizard;
 
-import org.eyalgo.server.dropwizard.jdbi.MongoFactory;
-
 import io.dropwizard.Configuration;
+
+import org.eyalgo.server.dropwizard.jdbi.MongoServicesFactory;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class CountersBufferConfiguration extends Configuration {
-	private MongoFactory mongoFactory = new MongoFactory();
+	@JsonProperty("mongo")
+	private MongoServicesFactory servicesFactory = new MongoServicesFactory();
 
 	public CountersBufferConfiguration() {
 	}
 
-	@JsonProperty("mongo")
-	public MongoFactory getMongoFactory() {
-		return mongoFactory;
+	public MongoServicesFactory getServicesFactory() {
+		return servicesFactory;
 	}
 
-	public void setMongoFactory(MongoFactory mongoFactory) {
-		this.mongoFactory = mongoFactory;
+	public void setMongoFactory(MongoServicesFactory mongoFactory) {
+		this.servicesFactory = mongoFactory;
 	}
 }
