@@ -8,6 +8,8 @@ import java.net.UnknownHostException;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
+import org.eyalgo.counters.CountersRetriever;
+import org.eyalgo.counters.CountersUpdater;
 import org.eyalgo.counters.impl.mongo.MongoCountersRetriever;
 import org.eyalgo.counters.impl.mongo.MongoCountersUpdater;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -91,14 +93,14 @@ public class MongoFactory {
 
 	public final static class MongoServices {
 		public final MongoClient client;
-		public final MongoCountersRetriever countersRetriever;
-		public final MongoCountersUpdater mongoCountersUpdater;
+		public final CountersRetriever countersRetriever;
+		public final CountersUpdater countersUpdater;
 
 		private MongoServices(MongoClient client, String _db) {
 			this.client = client;
 			Datastore datastore = new Morphia().createDatastore(client, _db);
 			countersRetriever = new MongoCountersRetriever(datastore);
-			mongoCountersUpdater = new MongoCountersUpdater(datastore);
+			countersUpdater = new MongoCountersUpdater(datastore);
 		}
 	}
 }

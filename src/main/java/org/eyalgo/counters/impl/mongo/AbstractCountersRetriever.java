@@ -1,4 +1,4 @@
-package org.eyalgo.counters;
+package org.eyalgo.counters.impl.mongo;
 
 import static org.eyalgo.counters.CountersUtils.counterPrefix;
 
@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eyalgo.counters.impl.mongo.Counter;
+import org.eyalgo.counters.Counterable;
+import org.eyalgo.counters.CountersRetriever;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;

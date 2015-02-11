@@ -9,7 +9,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
 import com.google.common.cache.RemovalNotification;
 
-public class CountersBuffer {
+public class CountersBuffer implements CountersIncrease {
 	private final LoadingCache<Counterable, BufferValue> cache;
 	private final CountersUpdater countersUpdater;
 	private final int threashold;
@@ -27,7 +27,8 @@ public class CountersBuffer {
 		//@formatter:on
 	}
 
-	public void inc(Counterable key) {
+	@Override
+	public void increase(Counterable key) {
 		BufferValue meter = cache.getUnchecked(key);
 		int currentValue = meter.increment();
 		if (currentValue > threashold) {

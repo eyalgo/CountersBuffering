@@ -29,6 +29,6 @@ public class CountersBufferApplication extends Application<CountersBufferConfigu
 		MongoServices services = mongoFactory.build(environment);
 		environment.healthChecks().register("mongo", new MongoConnectionHealth(services.client));
 		environment.jersey().register(new CountersResource(services.countersRetriever));
-		environment.jersey().register(new IncreaseCounterResource(services.mongoCountersUpdater));
+		environment.jersey().register(new IncreaseCounterResource(services.countersUpdater));
 	}
 }
