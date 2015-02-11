@@ -1,4 +1,4 @@
-package org.eyalgo.server.dropwizard.jdbi;
+package org.eyalgo.server.dropwizard.configuration_factories;
 
 import io.dropwizard.lifecycle.Managed;
 import io.dropwizard.setup.Environment;
@@ -8,10 +8,14 @@ import java.net.UnknownHostException;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
+import org.eyalgo.buffer.BufferConfiguration;
+import org.eyalgo.buffer.CountersBuffer;
+import org.eyalgo.buffer.CountersBufferIncrease;
 import org.eyalgo.counters.CountersRetriever;
 import org.eyalgo.counters.CountersUpdater;
 import org.eyalgo.counters.impl.mongo.MongoCountersRetriever;
 import org.eyalgo.counters.impl.mongo.MongoCountersUpdater;
+import org.eyalgo.server.dropwizard.CountersBufferConfiguration;
 import org.eyalgo.server.dropwizard.core.CountersServices;
 import org.eyalgo.server.dropwizard.core.ServicesFactory;
 import org.eyalgo.server.dropwizard.health.MongoConnectionHealth;
@@ -79,7 +83,7 @@ public class MongoServicesFactory implements ServicesFactory {
 	}
 
 	@Override
-	public CountersServices build(Environment environment) {
+	public CountersServices build(Environment environment, CountersBufferConfiguration configuration) {
 		try {
 			MongoClient client = new MongoClient(getHost(), getPort());
 			environment.lifecycle().manage(new Managed() { // TODO create a class instead of anonymous
@@ -93,7 +97,7 @@ public class MongoServicesFactory implements ServicesFactory {
 						}
 					});
 			environment.healthChecks().register("mongo", new MongoConnectionHealth(client));
-			return new MongoCountersServices(client, getDb());
+			return new MongoCountersServices(client, getDb(), configuration.getBufferConfiguration());
 		} catch (UnknownHostException e) {
 			throw new RuntimeException("Problem building CountersServices", e);
 		}
@@ -101,12 +105,14 @@ public class MongoServicesFactory implements ServicesFactory {
 
 	private final static class MongoCountersServices implements CountersServices {
 		private final CountersRetriever countersRetriever;
-		private final CountersUpdater countersUpdater;
+		private final CountersBufferIncrease bufferIncrease;
 
-		private MongoCountersServices(MongoClient client, String _db) {
+		private MongoCountersServices(MongoClient client, String _db, BufferConfiguration bufferConfiguration) {
 			Datastore datastore = new Morphia().createDatastore(client, _db);
-			countersRetriever = new MongoCountersRetriever(datastore);
-			countersUpdater = new MongoCountersUpdater(datastore);
+			this.countersRetriever = new MongoCountersRetriever(datastore);
+			CountersUpdater countersUpdater = new MongoCountersUpdater(datastore);
+			this.bufferIncrease = new CountersBuffer(countersUpdater, bufferConfiguration);
+			
 		}
 
 		@Override
@@ -115,8 +121,8 @@ public class MongoServicesFactory implements ServicesFactory {
 		}
 
 		@Override
-		public CountersUpdater getCountersUpdater() {
-			return countersUpdater;
+		public CountersBufferIncrease getCountersBufferIncrease() {
+			return bufferIncrease;
 		}
 	}
 }

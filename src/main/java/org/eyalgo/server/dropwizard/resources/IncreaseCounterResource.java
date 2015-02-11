@@ -6,22 +6,22 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.eyalgo.counters.CountersUpdater;
+import org.eyalgo.buffer.CountersBufferIncrease;
 import org.eyalgo.server.dropwizard.api.ServiceCounter;
 
 @Path("/incCounter/")
 public class IncreaseCounterResource {
 
-	private final CountersUpdater countersUpdater;
+	private final CountersBufferIncrease countersBufferIncrease;
 
-	public IncreaseCounterResource(CountersUpdater countersUpdater) {
-		this.countersUpdater = countersUpdater;
+	public IncreaseCounterResource(CountersBufferIncrease countersBufferIncrease) {
+		this.countersBufferIncrease = countersBufferIncrease;
 	}
 
 	@Consumes(value = MediaType.APPLICATION_JSON)
 	@PUT
 	public Response increaseCounter(ServiceCounter serviceCounter) {
-		countersUpdater.increaseCounter(serviceCounter, 1);
+		countersBufferIncrease.increase(serviceCounter);
 		return Response.noContent().build();
 	}
 }

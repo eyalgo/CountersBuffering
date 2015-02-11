@@ -2,6 +2,6 @@ package org.eyalgo.buffer;
 
 import org.eyalgo.counters.Counterable;
 
-public interface CountersIncrease {
+public interface CountersBufferIncrease {
 	void increase(Counterable key);
 }

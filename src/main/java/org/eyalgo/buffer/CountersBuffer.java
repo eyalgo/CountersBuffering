@@ -9,19 +9,19 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
 import com.google.common.cache.RemovalNotification;
 
-public class CountersBuffer implements CountersIncrease {
+public class CountersBuffer implements CountersBufferIncrease {
 	private final LoadingCache<Counterable, BufferValue> cache;
 	private final CountersUpdater countersUpdater;
 	private final int threashold;
 
-	public CountersBuffer(CountersUpdater countersUpdater, BufferConfiguration cacheConfiguration) {
-		this.threashold = cacheConfiguration.threashold;
+	public CountersBuffer(CountersUpdater countersUpdater, BufferConfiguration bufferConfiguration) {
+		this.threashold = bufferConfiguration.getThreshold();
 		this.countersUpdater = countersUpdater;
 		//@formatter:off
 		this.cache = CacheBuilder.newBuilder()
-				.maximumSize(cacheConfiguration.maximumSize)
-				.expireAfterWrite(cacheConfiguration.expireAfterWriteInSec, TimeUnit.SECONDS)
-				.expireAfterAccess(cacheConfiguration.expireAfterAccessInSec, TimeUnit.SECONDS)
+				.maximumSize(bufferConfiguration.getMaximumSize())
+				.expireAfterWrite(bufferConfiguration.getExpireAfterWriteInSec(), TimeUnit.SECONDS)
+				.expireAfterAccess(bufferConfiguration.getExpireAfterAccessInSec(), TimeUnit.SECONDS)
 				.removalListener((notification) -> increaseCounter(notification))
 				.build(new BufferValueCacheLoader());
 		//@formatter:on

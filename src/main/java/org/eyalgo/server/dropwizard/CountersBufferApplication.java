@@ -25,8 +25,8 @@ public class CountersBufferApplication extends Application<CountersBufferConfigu
 	@Override
 	public void run(CountersBufferConfiguration configuration, Environment environment) {
 		ServicesFactory servicesFactory = configuration.getServicesFactory();
-		CountersServices services = servicesFactory.build(environment);
+		CountersServices services = servicesFactory.build(environment, configuration);
 		environment.jersey().register(new CountersResource(services.getCountersRetriever()));
-		environment.jersey().register(new IncreaseCounterResource(services.getCountersUpdater()));
+		environment.jersey().register(new IncreaseCounterResource(services.getCountersBufferIncrease()));
 	}
 }

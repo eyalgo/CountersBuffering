@@ -13,3 +13,9 @@ mongo:
   port: 12345
   db: metadata
   dbCollection: counters
+  
+buffer:
+  maximumSize: 100
+  expireAfterWriteInSec: 10
+  expireAfterAccessInSec: 10
+  threshold: 5
