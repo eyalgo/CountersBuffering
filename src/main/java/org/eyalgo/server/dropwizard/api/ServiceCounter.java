@@ -4,7 +4,6 @@ import org.eyalgo.counters.Counterable;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class ServiceCounter implements Counterable {
@@ -48,7 +47,7 @@ public class ServiceCounter implements Counterable {
 
 	@Override
 	public String toString() {
-		return MoreObjects.toStringHelper(this).add("Major-Key", majorKey).add("Minor-Key", minorKey).toString();
+		return counterKey();
 	}
 
 }

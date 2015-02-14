@@ -29,4 +29,9 @@ public class TestableCounterable implements Counterable {
 		}
 		return false;
 	}
+	
+	@Override
+	public String toString() {
+		return counterKey();
+	}
 }

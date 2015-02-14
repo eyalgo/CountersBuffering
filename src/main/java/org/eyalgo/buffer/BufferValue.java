@@ -2,8 +2,6 @@ package org.eyalgo.buffer;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.google.common.base.MoreObjects;
-
 class BufferValue {
 	private final AtomicInteger value;
 
@@ -25,7 +23,7 @@ class BufferValue {
 
 	@Override
 	public String toString() {
-		return MoreObjects.toStringHelper(this).add("AtomicInteger", value).toString();
+		return value.toString();
 	}
 
 }

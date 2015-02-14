@@ -9,7 +9,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
 import org.eyalgo.buffer.BufferConfiguration;
-import org.eyalgo.buffer.CountersBuffer;
+import org.eyalgo.buffer.CountersCacheBuffer;
 import org.eyalgo.buffer.CountersBufferIncrease;
 import org.eyalgo.counters.CountersRetriever;
 import org.eyalgo.counters.CountersUpdater;
@@ -111,7 +111,7 @@ public class MongoServicesFactory implements ServicesFactory {
 			Datastore datastore = new Morphia().createDatastore(client, _db);
 			this.countersRetriever = new MongoCountersRetriever(datastore);
 			CountersUpdater countersUpdater = new MongoCountersUpdater(datastore);
-			this.bufferIncrease = new CountersBuffer(countersUpdater, bufferConfiguration);
+			this.bufferIncrease = new CountersCacheBuffer(countersUpdater, bufferConfiguration);
 			
 		}
 
