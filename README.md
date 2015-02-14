@@ -24,10 +24,13 @@ Go to that directory and run: `java -jar counters.jar server ../resources/main/c
 ## API
 ### Increasing Counter
 curl -v -H "content-Type: application/json" -X PUT "http://localhost:9090/incCounter" -d '{"majorKey": "kjkjk", "minorKey": "g11kj1"}'
+
 It is possible to use Chrome plugins, such as *Advanced REST Client* or *Postman*
 
 ### Get Counters in Persistence
-http://localhost:9090/counters
-curl -X GET http://localhost:9090/counters
+[http://localhost:9090/counters/persisted](http://localhost:9090/counters/persisted)
+
+`curl -X GET http://localhost:9090/counters/persisted`
 
 ### Get Counters in Cache
+[http://localhost:9090/counters/buffer](http://localhost:9090/counters/buffer)

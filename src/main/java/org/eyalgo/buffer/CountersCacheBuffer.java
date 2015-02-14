@@ -12,7 +12,7 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.cache.RemovalNotification;
 import com.google.common.collect.ImmutableMap;
 
-public class CountersCacheBuffer implements CountersBufferIncrease, CacheBuffer {
+public class CountersCacheBuffer implements CountersBuffer {
 	private final LoadingCache<Counterable, BufferValue> cache;
 	private final CountersUpdater countersUpdater;
 	private final int threashold;

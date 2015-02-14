@@ -9,8 +9,8 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
 import org.eyalgo.buffer.BufferConfiguration;
+import org.eyalgo.buffer.CountersBuffer;
 import org.eyalgo.buffer.CountersCacheBuffer;
-import org.eyalgo.buffer.CountersBufferIncrease;
 import org.eyalgo.counters.CountersRetriever;
 import org.eyalgo.counters.CountersUpdater;
 import org.eyalgo.counters.impl.mongo.MongoCountersRetriever;
@@ -105,13 +105,13 @@ public class MongoServicesFactory implements ServicesFactory {
 
 	private final static class MongoCountersServices implements CountersServices {
 		private final CountersRetriever countersRetriever;
-		private final CountersBufferIncrease bufferIncrease;
+		private final CountersBuffer countersBuffer;
 
 		private MongoCountersServices(MongoClient client, String _db, BufferConfiguration bufferConfiguration) {
 			Datastore datastore = new Morphia().createDatastore(client, _db);
 			this.countersRetriever = new MongoCountersRetriever(datastore);
 			CountersUpdater countersUpdater = new MongoCountersUpdater(datastore);
-			this.bufferIncrease = new CountersCacheBuffer(countersUpdater, bufferConfiguration);
+			this.countersBuffer = new CountersCacheBuffer(countersUpdater, bufferConfiguration);
 			
 		}
 
@@ -121,8 +121,8 @@ public class MongoServicesFactory implements ServicesFactory {
 		}
 
 		@Override
-		public CountersBufferIncrease getCountersBufferIncrease() {
-			return bufferIncrease;
+		public CountersBuffer getCountersBuffer() {
+			return countersBuffer;
 		}
 	}
 }
